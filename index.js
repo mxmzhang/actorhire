@@ -1,6 +1,8 @@
 var express = require('express')
 var app = express();
 
+const PORT = process.env.PORT || 3030;
+
 app.use(express.static('static_files'))
 
 app.use(express.json());
@@ -21,3 +23,7 @@ app.get('/account', function(req, res) {
 app.get('/hire', function(req, res) {
     res.render('index')
 })
+
+app.listen(PORT, () => {
+    console.log(`server started on port ${PORT}`);
+  });
