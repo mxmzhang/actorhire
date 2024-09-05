@@ -21,7 +21,15 @@ const pool = new Pool({
 });
 
 app.get('/', function(req, res) {
-    pool.query("CREATE TABLE IF NOT EXISTS users (user_id INT GENERATED ALWAYS AS IDENTITY, username VARCHAR(70), password VARCHAR(70), name VARCHAR(70))", 
+    // pool.query("CREATE TABLE IF NOT EXISTS users (user_id INT GENERATED ALWAYS AS IDENTITY, username VARCHAR(70), password VARCHAR(70), name VARCHAR(70))", 
+    //     function(err, result) {
+    //         console.log('done')
+    //         if(err) {
+    //             console.log('error')
+    //             console.log(err)
+    //         }
+    // })
+    pool.query("CREATE TABLE IF NOT EXISTS hires (id INT GENERATED ALWAYS AS IDENTITY, user_id INT, actor_id INT, rating INT)", 
         function(err, result) {
             console.log('done')
             if(err) {
