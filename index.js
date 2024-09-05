@@ -21,30 +21,6 @@ const pool = new Pool({
 });
 
 app.get('/', function(req, res) {
-    // pool.query("CREATE TABLE IF NOT EXISTS users (user_id INT GENERATED ALWAYS AS IDENTITY, username VARCHAR(70), password VARCHAR(70), name VARCHAR(70))", 
-    //     function(err, result) {
-    //         console.log('done')
-    //         if(err) {
-    //             console.log('error')
-    //             console.log(err)
-    //         }
-    // })
-    // pool.query("CREATE TABLE IF NOT EXISTS hires (id INT GENERATED ALWAYS AS IDENTITY, user_id INT, actor_id INT, rating INT)", 
-    //     function(err, result) {
-    //         console.log('done')
-    //         if(err) {
-    //             console.log('error')
-    //             console.log(err)
-    //         }
-    // })
-    pool.query("CREATE TABLE IF NOT EXISTS actors (actor_id INT GENERATED ALWAYS AS IDENTITY, fName VARCHAR(80), lName VARCHAR(80), descrip TEXT)", 
-        function(err, result) {
-            console.log('done')
-            if(err) {
-                console.log('error')
-                console.log(err)
-            }
-    })
     res.render('index')
 })
 
@@ -57,7 +33,7 @@ app.get('/hire', function(req, res) {
 })
 
 app.get('/login', function(req, res) {
-    res.render('index')
+    res.render('login')
 })
 
 app.get('/form-response', function(req, res) {
