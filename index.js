@@ -29,7 +29,15 @@ app.get('/', function(req, res) {
     //             console.log(err)
     //         }
     // })
-    pool.query("CREATE TABLE IF NOT EXISTS hires (id INT GENERATED ALWAYS AS IDENTITY, user_id INT, actor_id INT, rating INT)", 
+    // pool.query("CREATE TABLE IF NOT EXISTS hires (id INT GENERATED ALWAYS AS IDENTITY, user_id INT, actor_id INT, rating INT)", 
+    //     function(err, result) {
+    //         console.log('done')
+    //         if(err) {
+    //             console.log('error')
+    //             console.log(err)
+    //         }
+    // })
+    pool.query("CREATE TABLE IF NOT EXISTS actors (actor_id INT GENERATED ALWAYS AS IDENTITY, fName VARCHAR(80), lName VARCHAR(80), descrip TEXT)", 
         function(err, result) {
             console.log('done')
             if(err) {
