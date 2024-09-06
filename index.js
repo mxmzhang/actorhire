@@ -41,8 +41,8 @@ app.get('/account', function(req, res) {
 
 function insertInitialActors(req, res, next) {
     pool.query(`INSERT INTO actors (fName, lName, descrip) VALUES
-        ('Sarah', 'Zheng', 'I graduated from Boston University with a Bachelor's in degree. I've had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend'),
-        ('Jonah', 'Higgins', 'Hello! I'm Jonah, and I'm a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.')`,
+        ('Sarah', 'Zheng', 'I graduated from Boston University with a Bachelor\'s in degree. I\'ve had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend'),
+        ('Jonah', 'Higgins', 'Hello! I\'m Jonah, and I\'m a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.')`,
         function(err, results) {
             if (err) {
                 console.error("insert actors ", err);
