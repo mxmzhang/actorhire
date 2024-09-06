@@ -55,12 +55,13 @@ app.get('/account', function(req, res) {
 // }
 
 function deleteActors(req, res, next) {
-    pool.query("DELETE FROM actors WHERE actor_id = 3", function(err, results) {
+    pool.query("DELETE FROM actors WHERE actor_id = 4", function(err, results) {
         if (err) {
             console.error("delete", err)
             return;
         }
         console.log("delete success")
+        next()
     })
 }
 
