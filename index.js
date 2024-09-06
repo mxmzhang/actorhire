@@ -54,6 +54,16 @@ app.get('/account', function(req, res) {
 //     )
 // }
 
+function deleteActors(req, res, next) {
+    pool.query("DELETE FROM actors WHERE actor_id = 3", function(err, results) {
+        if (err) {
+            console.error("delete", err)
+            return;
+        }
+        console.log("delete success")
+    })
+}
+
 app.get('/hire', function(req, res) {
     if (!req.session.loggedin) {
         res.redirect('/login')
