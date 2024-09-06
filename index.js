@@ -55,9 +55,7 @@ function insertInitialActors(req, res, next) {
 }
 
 app.get('/hire', function(req, res) {
-    if (!(loggedin in req.session)) {
-        res.redirect('/login')
-    } else if (!req.session.loggedin) {
+    if (!req.session.loggedin) {
         res.redirect('/login')
     }
     pool.query("SELECT * FROM actors", insertInitialActors, function(err, results) {
