@@ -48,7 +48,7 @@ app.get('/login', function(req, res) {
 })
 
 function getExpectedPW(req, res, next) {
-    pool.query("SELECT * FROM users WHERE username = "+req.body.username, 
+    pool.query("SELECT * FROM users WHERE username = $1", [req.body.username], 
         function(err, result) {
             console.log('done')
             if(err) {
