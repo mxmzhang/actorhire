@@ -45,7 +45,7 @@ function insertInitialActors(req, res, next) {
         ("Jonah", "Higgin", "Hello! I'm Jonah, and I'm a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.")`,
         function(err, results) {
             if (err) {
-                console.err("insert actors ", err);
+                console.error("insert actors ", err);
                 return;
             }
             console.log("insert actor success")
@@ -57,7 +57,7 @@ function insertInitialActors(req, res, next) {
 app.get('/hire', function(req, res) {
     pool.query("SELECT * FROM actors", insertInitialActors, function(err, results) {
         if (err) {
-            console.err("getting actors ", err)
+            console.error("getting actors ", err)
             return;
         }
         var obj = {
