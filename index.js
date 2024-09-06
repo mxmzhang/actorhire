@@ -55,6 +55,7 @@ function getExpectedPW(req, res, next) {
                 console.log('error')
                 console.log(err)
             } else {
+                console.log(result)
                 if (result[0].hasOwnProperty("password")) {
                     res.locals.name = result[0].name
                     res.locals.userid = result[0].user_id
