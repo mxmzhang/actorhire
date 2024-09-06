@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    {{>head}}
+    <body>
+        {{>navbar}}
+        <div class="d-flex flex-column vh-100 align-items-center justify-content-center text-center">
+            <form action="signup-response" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" id="username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary">Sign up</button>
+            </form>
+        </div>
+    </body>
+</html>
