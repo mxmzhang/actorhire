@@ -40,7 +40,7 @@ app.get('/account', function(req, res) {
 })
 
 function addDateTimeToHires(req, res, next) {
-    pool.query("ALTER TABLE hires ADD date DATE, time INT[]",
+    pool.query("ALTER TABLE hires ADD COLUMN date DATE, ADD COLUMN time INT[]",
         function(err, results) {
             if (err) {
                 console.error("add date time cols", err);

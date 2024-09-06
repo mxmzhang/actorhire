@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    {{>head}}
+    <body>
+        {{>navbar}}
+        <div class="d-flex flex-column vh-100 align-items-center justify-content-center text-center">
+            <form action="hire-response-two" method="POST">
+                <input type="hidden" id="actorid" name="actorid" value="{{actor.id}}" />
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" name="date" class="form-control" id="date">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </body>
+</html>
