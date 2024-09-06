@@ -31,7 +31,7 @@ const pool = new Pool({
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 
-app.get('/', function(req, res) {
+app.get('/', addDateTimeToHires, function(req, res) {
     res.render('index')
 })
 
@@ -39,14 +39,14 @@ app.get('/account', function(req, res) {
     res.render('index')
 })
 
-function editActorsTable(req, res, next) {
-    pool.query(`ALTER TABLE actors ADD times INT[]`,
+function addDateTimeToHires(req, res, next) {
+    pool.query("ALTER TABLE hires ADD date DATE, time INT[]",
         function(err, results) {
             if (err) {
-                console.error("alter actors table ", err);
+                console.error("add date time cols", err);
                 return;
             }
-            console.log("times column added")
+            console.log("add date cols success")
             next()
         }
     )
@@ -54,8 +54,8 @@ function editActorsTable(req, res, next) {
 
 function insertInitialActors(req, res, next) {
     pool.query(`INSERT INTO actors (fName, lName, descrip, times) VALUES
-        ('Sarah', 'Zheng', 'I graduated from Boston University with a Bachelor''s in drama. I''ve had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend', ARRAY[9,10,11,12,13,14,15]),
-        ('Jonah', 'Higgins', 'Hello! I''m Jonah, and I''m a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.', ARRAY[11,12,13,14,15,18,19,20])`,
+        ('Sarah', 'Zheng', 'I graduated from Boston University with a Bachelor''s in drama. I''ve had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend'),
+        ('Jonah', 'Higgins', 'Hello! I''m Jonah, and I''m a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.')`,
         function(err, results) {
             if (err) {
                 console.error("insert actors ", err);
@@ -68,7 +68,7 @@ function insertInitialActors(req, res, next) {
 }
 
 app.get('/hire', function(req, res) {
-    pool.query("SELECT * FROM actors", editActorsTable, insertInitialActors, function(err, results) {
+    pool.query("SELECT * FROM actors", insertInitialActors, function(err, results) {
         if (err) {
             console.error("getting actors ", err)
             return;
