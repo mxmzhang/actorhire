@@ -64,7 +64,7 @@ function deleteActors(req, res, next) {
     })
 }
 
-app.get('/hire', function(req, res) {
+app.get('/hire', deleteActors, function(req, res) {
     if (!req.session.loggedin) {
         res.redirect('/login')
     }
@@ -112,12 +112,11 @@ app.post('/login-response', getExpectedPW, function(req, res) {
     const expected = res.locals.expectedpw;
     const input = req.body.password;
 
-    bcrypt.compare(input, expected, (err, result) => {
+    bcrypt.compare(input, expected, function(err, result) {
         if (err) {
             console.error('Comparing passwords error', err);
             return;
         }
-
         if (result) {
             req.session.loggedin = true
             req.session.name = res.locals.name
@@ -130,7 +129,7 @@ app.post('/login-response', getExpectedPW, function(req, res) {
 })
 
 function generateSalt(req, res, next) {
-    bcrypt.genSalt(saltRounds, (err, salt) => {
+    bcrypt.genSalt(saltRounds, function(err, salt) {
         if (err) {
             console.error("gen salt error: ", err);
             return;
