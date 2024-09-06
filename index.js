@@ -39,8 +39,33 @@ app.get('/account', function(req, res) {
     res.render('index')
 })
 
+function insertInitialActors(req, res, next) {
+    pool.query(`INSERT INTO actors (fName, lName, descrip) VALUES
+        ("Sarah", "Zheng", "I graduated from Boston University with a Bachelor's in degree. I've had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend"),
+        ("Jonah", "Higgin", "Hello! I'm Jonah, and I'm a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.")`,
+        function(err, results) {
+            if (err) {
+                console.err("insert actors ", err);
+                return;
+            }
+            console.log("insert actor success")
+            next()
+        }
+    )
+}
+
 app.get('/hire', function(req, res) {
-    res.render('index')
+    pool.query("SELECT * FROM actors", insertInitialActors, function(err, results) {
+        if (err) {
+            console.err("getting actors ", err)
+            return;
+        }
+        var obj = {
+            arr: results.rows
+        }
+        console.log("got actors success!")
+        res.render('actors', obj)
+    })
 })
 
 app.get('/login', function(req, res) {

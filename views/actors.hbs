@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    {{>head}}
+    <body>
+        {{>navbar}}
+        <div class="container mt-5">
+        <div class="row">
+            <!-- Iterate over each actor and create a card for them -->
+            {{#each arr}}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img src="<%= actor.image_url %>" class="card-img" alt="Actor Image">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{this.fName}} {{this.lName}}</h5>
+                                    <p class="card-text">{{this.descrip}}</p>
+                                    <a href="#" class="btn btn-primary">Hire</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    </body>
+</html>
