@@ -63,7 +63,7 @@ app.get('/hire', function(req, res) {
             console.error("getting actors ", err)
             return;
         }
-        console.log(results.row)
+        console.log(results)
         var obj = {
             arr: results.rows
         }
