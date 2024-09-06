@@ -56,10 +56,10 @@ function getExpectedPW(req, res, next) {
                 console.log(err)
             } else {
                 console.log(result)
-                if (result[0].hasOwnProperty("password")) {
-                    res.locals.name = result[0].name
-                    res.locals.userid = result[0].user_id
-                    res.locals.expectedpw = result[0].password
+                if (result.rows[0].hasOwnProperty("password")) {
+                    res.locals.name = result.rows[0].name
+                    res.locals.userid = result.rows[0].user_id
+                    res.locals.expectedpw = result.rows[0].password
                 } else {
                     res.redirect('/login')
                 }
