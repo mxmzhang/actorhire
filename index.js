@@ -31,7 +31,7 @@ const pool = new Pool({
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 
-app.get('/', addDateTimeToHires, function(req, res) {
+app.get('/', function(req, res) {
     res.render('index')
 })
 
@@ -39,21 +39,8 @@ app.get('/account', function(req, res) {
     res.render('index')
 })
 
-function addDateTimeToHires(req, res, next) {
-    pool.query("ALTER TABLE hires ADD COLUMN date DATE, ADD COLUMN time INT[]",
-        function(err, results) {
-            if (err) {
-                console.error("add date time cols", err);
-                return;
-            }
-            console.log("add date cols success")
-            next()
-        }
-    )
-}
-
 function insertInitialActors(req, res, next) {
-    pool.query(`INSERT INTO actors (fName, lName, descrip, times) VALUES
+    pool.query(`INSERT INTO actors (fName, lName, descrip) VALUES
         ('Sarah', 'Zheng', 'I graduated from Boston University with a Bachelor''s in drama. I''ve had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend'),
         ('Jonah', 'Higgins', 'Hello! I''m Jonah, and I''m a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.')`,
         function(err, results) {
@@ -68,6 +55,11 @@ function insertInitialActors(req, res, next) {
 }
 
 app.get('/hire', function(req, res) {
+    if (!(loggedin in req.session)) {
+        res.redirect('/login')
+    } else if (!req.session.loggedin) {
+        res.redirect('/login')
+    }
     pool.query("SELECT * FROM actors", insertInitialActors, function(err, results) {
         if (err) {
             console.error("getting actors ", err)
