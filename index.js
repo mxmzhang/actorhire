@@ -53,8 +53,8 @@ function editActorsTable(req, res, next) {
 }
 
 function insertInitialActors(req, res, next) {
-    pool.query(`INSERT INTO actors (fName, lName, descrip) VALUES
-        ('Sarah', 'Zheng', 'I graduated from Boston University with a Bachelor\'s in degree. I\'ve had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend', [9,10,11,12,13,14,15]),
+    pool.query(`INSERT INTO actors (fName, lName, descrip, times) VALUES
+        ('Sarah', 'Zheng', 'I graduated from Boston University with a Bachelor\'s in drama. I\'ve had 6+ years of experience in acting, including a stint in Sponge Bob the Musical, and I specialize in break-ups, crazy cat ladies, and distressed friend', [9,10,11,12,13,14,15]),
         ('Jonah', 'Higgins', 'Hello! I\'m Jonah, and I\'m a budding Off-Broadway actor. You may recognize me at 00:45:02 of Legally Blonde. I specialize in dramatic distractions and scaring people.', [11,12,13,14,15,18,19,20])`,
         function(err, results) {
             if (err) {
