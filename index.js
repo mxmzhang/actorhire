@@ -102,6 +102,8 @@ function generateSalt(req, res, next) {
 }
 
 function hashPassword(req, res, next) {
+    console.log(req.body.password)
+    console.log(res.locals.salt)
     bcrypt.hash(req.body.password, res.locals.salt, (err, hash) => {
         if (err) {
             console.error("hash password error: ", err)
