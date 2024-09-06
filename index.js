@@ -95,13 +95,14 @@ function generateSalt(req, res, next) {
             console.error("gen salt error: ", err);
             return;
         }
+        res.locals.salt = salt
         console.log("salt successful")
         next();
     });
 }
 
 function hashPassword(req, res, next) {
-    bcrypt.hash(req.body.password, salt, (err, hash) => {
+    bcrypt.hash(req.body.password, res.locals.salt, (err, hash) => {
         if (err) {
             console.error("hash password error: ", err)
             return;
