@@ -82,6 +82,8 @@ app.get('/hireform/:id', function(req, res) {
 // Collect rows that are on the same date and with
 // the same actor as the user chose
 function getRelevantRows(req, res, next) {
+    console.log(req.body.date)
+    console.log(req.body.actorid)
     pool.query("SELECT * FROM hires WHERE date = $1 AND actor_id = $2", [req.body.date, req.body.actorid], 
         function(err, results) {
             if (err) {
