@@ -141,7 +141,6 @@ app.post('/hireform/hire-response/hire-response-two', function(req, res) {
             }
             res.locals.samedate = results.rows
             console.log("booked yay")
-            next()
         })
     res.redirect('/account')
 })
