@@ -54,18 +54,18 @@ app.get('/account', function(req, res) {
 //     )
 // }
 
-function deleteActors(req, res, next) {
-    pool.query("DELETE FROM actors WHERE actor_id = 4", function(err, results) {
+function addReqCol(req, res, next) {
+    pool.query("ALTER TABLE hires ADD COLUMN request TEXT", function(err, results) {
         if (err) {
-            console.error("delete", err)
+            console.error("adding request col", err)
             return;
         }
-        console.log("delete success")
+        console.log("adding request col success")
         next()
     })
 }
 
-app.get('/hire', deleteActors, function(req, res) {
+app.get('/hire', addReqCol, function(req, res) {
     if (!req.session.loggedin) {
         res.redirect('/login')
     }
@@ -81,6 +81,50 @@ app.get('/hire', deleteActors, function(req, res) {
         console.log("got actors success!")
         res.render('actors', obj)
     })
+})
+
+app.get('/hireform/:id', function(req, res) {
+    var obj = {
+        id: req.params.id
+    }
+    res.render('hireformdate')
+})
+
+// Collect rows that are on the same date and with
+// the same actor as the user chose
+function getRelevantRows(req, res, next) {
+    pool.query("SELECT * FROM hires WHERE date = $1 AND actor_id = $2", [req.body.date, req.body.actorid], 
+        function(err, results) {
+            if (err) {
+                console.error("getting relevant rows", err)
+                return;
+            }
+            res.locals.samedate = results.rows
+            console.log("got relevant rows yay")
+            next()
+        })
+}
+
+app.post('/hire-response', getRelevantRows, function(req, res) {
+    var arr = [9,10,11,12,13,14,15,16,17]
+    const samedate = res.locals.samedate
+    for (let i = 0; i < samedate.length; i++) {
+        for (let j = 0; j < samedate[i].time.length; j++) {
+            if (arr.includes(samedate[i].time[j])) {
+                delete arr[samedate[i].time[j] - 9]
+            }
+        }
+    }
+    var obj = {
+        actorid : req.body.actorid,
+        times : arr,
+        date : req.body.date
+    }
+    res.render('hireformrest', obj)
+})
+
+app.post('/hire-response-two', function(req, res) {
+    res.redirect('/')
 })
 
 app.get('/login', function(req, res) {
