@@ -76,7 +76,7 @@ app.get('/hireform/:id', function(req, res) {
     var obj = {
         id: req.params.id
     }
-    res.render('hireformdate')
+    res.render('hireformdate', obj)
 })
 
 // Collect rows that are on the same date and with
