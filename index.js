@@ -31,7 +31,18 @@ const pool = new Pool({
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 
-app.get('/', function(req, res) {
+function printHireStuff(req, res, next) {
+    pool.query("SELECT * FROM hires", function(err, results) {
+        if (err) {
+            console.error("selecting hires ", err)
+            return;
+        }
+        console.log(results)
+        next()
+    })
+}
+
+app.get('/', printHireStuff, function(req, res) {
     res.render('index')
 })
 
