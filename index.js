@@ -94,7 +94,7 @@ function getRelevantRows(req, res, next) {
         })
 }
 
-app.post('/hire-response', getRelevantRows, function(req, res) {
+app.post('/hireform/hire-response', getRelevantRows, function(req, res) {
     var arr = [9,10,11,12,13,14,15,16,17]
     const samedate = res.locals.samedate
     for (let i = 0; i < samedate.length; i++) {
@@ -112,9 +112,25 @@ app.post('/hire-response', getRelevantRows, function(req, res) {
     res.render('hireformrest', obj)
 })
 
-app.post('/hire-response-two', function(req, res) {
-
-    res.redirect('/')
+app.post('/hireform/hire-response/hire-response-two', function(req, res) {
+    var arr = [];
+    for (let i = 9; i <= 17; i++) {
+        if (i.toString() in req.body) {
+            arr.push(i)
+        }
+    }
+    pool.query(`INSERT INTO hires (user_id, actor_id, rating, date, time, request) VALUE
+        ($1, $2, 0, $3, $4, $5)`, [req.session.userid, req.body.actorid, req.body.date, arr, req.body.request], 
+        function(err, results) {
+            if (err) {
+                console.error("insert booking", err)
+                return;
+            }
+            res.locals.samedate = results.rows
+            console.log("booked yay")
+            next()
+        })
+    res.redirect('/account')
 })
 
 app.get('/login', function(req, res) {
