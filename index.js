@@ -62,6 +62,9 @@ function getBookings(req, res, next) {
 }
 
 app.get('/account', getBookings, function(req, res) {
+    if (!req.session.loggedin) {
+        res.redirect('/login')
+    }
     var obj = {
         name : req.session.name,
         arr : res.locals.bookings
