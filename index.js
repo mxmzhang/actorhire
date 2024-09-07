@@ -31,17 +31,7 @@ const pool = new Pool({
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 
-function dropHires(req, res, next) {
-    pool.query("DELETE FROM hires", function(err, results) {
-        if (err) {
-            console.error("delete from hires", err)
-            return;
-        }
-        console.log("delete from hires successful")
-    })
-}
-
-app.get('/', dropHires, function(req, res) {
+app.get('/', function(req, res) {
     res.render('index')
 })
 
@@ -52,6 +42,7 @@ function getBookings(req, res, next) {
                 console.error("select users", err)
                 return;
             }
+            console.log(results)
             res.locals.bookings = results.rows
             console.log("select bookings successful")
             next()
