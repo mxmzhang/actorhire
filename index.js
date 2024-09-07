@@ -37,7 +37,7 @@ app.get('/', function(req, res) {
 
 function getBookings(req, res, next) {
     console.log(req.session.userid)
-    pool.query("SELECT * FROM hires WHERE user_id = $1", [req.session.userid],
+    pool.query("SELECT * FROM hires WHERE actor_id = $1", [req.session.userid],
         function(err, results) {
             if (err){
                 console.error("select users", err)
