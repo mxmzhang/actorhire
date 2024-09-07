@@ -132,7 +132,7 @@ app.post('/hireform/hire-response/hire-response-two', function(req, res) {
             arr.push(i)
         }
     }
-    pool.query(`INSERT INTO hires (user_id, actor_id, rating, date, time, request) VALUE
+    pool.query(`INSERT INTO hires (user_id, actor_id, rating, date, time, request) VALUES
         ($1, $2, 0, $3, $4, $5)`, [req.session.userid, req.body.actorid, req.body.date, arr, req.body.request], 
         function(err, results) {
             if (err) {
