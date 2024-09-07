@@ -126,9 +126,11 @@ app.post('/hireform/hire-response', getRelevantRows, function(req, res) {
 })
 
 app.post('/hireform/hire-response/hire-response-two', function(req, res) {
+    console.log(req.body)
     var arr = [];
     for (let i = 9; i <= 17; i++) {
         if (i.toString() in req.body) {
+            console.log("found")
             arr.push(i)
         }
     }
