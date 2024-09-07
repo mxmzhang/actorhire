@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    {{>head}}
+    <body>
+        {{>navbar}}
+        <div class="container mt-5 ms-4">
+            <h3>{{name}}</h3>
+            <h5>Bookings</h5>
+            {{#each arr}}
+                Request: {{arr.request}}<br>
+                Date: {{arr.date}}<br>
+                Time: {{arr.time}}<br>
+            {{/each}}
+        </div>
+    </body>
+</html>

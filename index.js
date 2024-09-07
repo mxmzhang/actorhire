@@ -31,23 +31,40 @@ const pool = new Pool({
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 
-function printHireStuff(req, res, next) {
-    pool.query("SELECT * FROM hires", function(err, results) {
+function dropHires(req, res, next) {
+    pool.query("DELETE FROM hires", function(err, results) {
         if (err) {
-            console.error("selecting hires ", err)
+            console.error("delete from hires", err)
             return;
         }
-        console.log(results)
-        next()
+        console.log("delete from hires successful")
     })
 }
 
-app.get('/', printHireStuff, function(req, res) {
+app.get('/', dropHires, function(req, res) {
     res.render('index')
 })
 
-app.get('/account', function(req, res) {
-    res.render('index')
+function getBookings(req, res, next) {
+    pool.query("SELECT * FROM hires WHERE user_id = $1", [req.session.userid],
+        function(err, results) {
+            if (err){
+                console.error("select users", err)
+                return;
+            }
+            res.locals.bookings = results.rows
+            console.log("select bookings successful")
+            next()
+        }
+    )
+}
+
+app.get('/account', getBookings, function(req, res) {
+    var obj = {
+        name : req.session.name,
+        arr : res.locals.bookings
+    }
+    res.render('account', obj)
 })
 
 // function insertInitialActors(req, res, next) {
