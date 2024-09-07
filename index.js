@@ -54,18 +54,7 @@ app.get('/account', function(req, res) {
 //     )
 // }
 
-function addReqCol(req, res, next) {
-    pool.query("ALTER TABLE hires ADD COLUMN request TEXT", function(err, results) {
-        if (err) {
-            console.error("adding request col", err)
-            return;
-        }
-        console.log("adding request col success")
-        next()
-    })
-}
-
-app.get('/hire', addReqCol, function(req, res) {
+app.get('/hire', function(req, res) {
     if (!req.session.loggedin) {
         res.redirect('/login')
     }
@@ -124,6 +113,7 @@ app.post('/hire-response', getRelevantRows, function(req, res) {
 })
 
 app.post('/hire-response-two', function(req, res) {
+
     res.redirect('/')
 })
 
