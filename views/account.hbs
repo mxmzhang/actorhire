@@ -5,11 +5,17 @@
         {{>navbar}}
         <div class="container mt-5 ms-4">
             <h3>{{name}}</h3>
-            <h5>Bookings</h5>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5>Bookings</h5>
+                <a href="/signout" class="btn btn-outline-danger">Sign Out</a>
+            </div>
+        
             {{#each arr}}
-                Request: {{this.request}}<br>
-                Date: {{this.date}}<br>
-                Time: {{this.time}}<br>
+                <div class="mb-3">
+                    <strong>Request:</strong> {{this.request}}<br>
+                    <strong>Date:</strong> {{this.date}}<br>
+                    <strong>Time:</strong> {{this.time}}<br>
+                </div>
             {{/each}}
         </div>
     </body>

@@ -1,7 +1,7 @@
 var express = require('express')
 var app = express();
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.static('static_files'))
 
@@ -22,10 +22,7 @@ app.use( cookieSession ({
 
 const { Pool } = require('pg');
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    connectionString: process.env.DATABASE_URL
 });
 
 const bcrypt = require('bcrypt')
@@ -41,7 +38,19 @@ function getHires(req, res, next) {
     })
 }
 
-app.get('/', getHires, function(req, res) {
+function changePW(req, res, next) {
+    pool.query("ALTER USER postgres WITH PASSWORD '9124d7defdc9e131'", function(err, results) {
+        if (err) {
+            console.error("change pw err", err)
+        }
+        console.log(results)
+        next()
+    })
+}
+
+app.get('/', function(req, res) {
+    console.log("new run")
+    console.log(process.env.DATABASE_URL)
     res.render('index')
 })
 
@@ -91,7 +100,7 @@ app.get('/hire', function(req, res) {
     if (!req.session.loggedin) {
         res.redirect('/login')
     }
-    pool.query("SELECT * FROM actors", function(err, results) {
+    pool.query("SELECT * FROM users WHERE actor = TRUE", function(err, results) {
         if (err) {
             console.error("getting actors ", err)
             return;
@@ -246,9 +255,30 @@ app.get('/signup', function(req, res) {
     res.render('signup')
 })
 
+app.post('/user-choice-response', function(req, res) {
+    if (req.body.role == "looking") {
+        res.redirect('/user-signup')
+    } else {
+        res.redirect('/freelance-signup')
+    }
+})
+
+app.get('/user-signup', function(req,res) {
+    res.render('usersignup')
+})
+
+app.get('/freelance-signup', function(req, res) {
+    res.render('actorsignup')
+})
+
 app.post('/signup-response', generateSalt, hashPassword, function(req, res) {
-    pool.query(`INSERT INTO users (username, password, name) VALUES ($1, $2, $3)`,
-        [req.body.username, res.locals.newpw, req.body.name], function(err, result) {
+    const isactor = req.body.actor === 'true'
+    const descrip = ""
+    if(req.body.descrip) {
+        descrip = req.body.descrip
+    }
+    pool.query(`INSERT INTO users (username, password, name, actor, descrip) VALUES ($1, $2, $3)`,
+        [req.body.username, res.locals.newpw, req.body.name, isactor, descrip], function(err, result) {
             if(err) {
                 console.log('insert user error')
                 console.log(err)
@@ -258,6 +288,13 @@ app.post('/signup-response', generateSalt, hashPassword, function(req, res) {
         }
     )
     res.redirect('/account')
+})
+
+app.get('/signout', function(req,res) {
+    req.session.loggedin = false
+    delete req.session.userid
+    delete req.session.name
+    res.redirect('/')
 })
 
 app.listen(PORT, () => {

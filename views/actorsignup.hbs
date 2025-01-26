@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> head}}
+</head>
+<body>
+  {{> navbar}}
+  <div class="d-flex flex-column vh-100 align-items-center justify-content-center text-center">
+    <form action="/signup-response" method="POST" class="w-100" style="max-width: 500px;">
+      <div class="form-group mb-3">
+        <label for="name">Name</label>
+        <input type="text" name="name" class="form-control" id="name" placeholder="Enter your name" required>
+      </div>
+      <div class="form-group mb-3">
+        <label for="username">Username</label>
+        <input type="text" name="username" class="form-control" id="username" placeholder="Enter username" required>
+      </div>
+      <div class="form-group mb-3">
+        <label for="password">Password</label>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+      </div>
+      <div class="form-group mb-4">
+        <label for="serviceDescription">Service Description</label>
+        <textarea name="serviceDescription" class="form-control" id="descrip" rows="4" placeholder="Describe the services you offer" 
+          required
+        ></textarea>
+        <input type="hidden" name="actor" value="true">
+      </div>
+      <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+  </div>
+</body>
+</html>
