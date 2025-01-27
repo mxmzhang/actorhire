@@ -312,6 +312,7 @@ app.get('/freelance-signup', function(req, res) {
 app.post('/signup-response', generateSalt, hashPassword, function(req, res) {
     const isactor = req.body.actor === 'true'
     let descrip = ""
+    console.log("descrip: "+req.body.descrip)
     if(req.body.descrip) {
         descrip = req.body.descrip
     }
