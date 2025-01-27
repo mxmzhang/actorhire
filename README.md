@@ -2,4 +2,4 @@ Misc is a site for miscellaneous freelance services, i.e. people can post whatev
 
 This web app uses express.js, Bootstrap to format and style the frontend, and a PostgreSQL database to store user data and bookings (there is a user table and a hire tables). I spent 6 hours on this project.
 
-This web app is deployed using fly.io and can be found here: https://actorhire-thrumming-firefly-6476.fly.dev/.
+This web app is deployed using fly.io and can be found here: https://actorhire-thrumming-firefly-6476.fly.dev/. A short video demo is also here: https://youtu.be/qa88Ow_Wma0.
