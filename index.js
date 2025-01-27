@@ -38,23 +38,29 @@ function getHires(req, res, next) {
     })
 }
 
-function changePW(req, res, next) {
-    pool.query("ALTER USER postgres WITH PASSWORD '9124d7defdc9e131'", function(err, results) {
-        if (err) {
-            console.error("change pw err", err)
-        }
-        console.log(results)
-        next()
-    })
-}
-
-app.get('/', function(req, res) {
+app.get('/', getHires, function(req, res) {
     console.log("new run")
     console.log(process.env.DATABASE_URL)
     res.render('index')
 })
 
-function getBookings(req, res, next) {
+function getUserBookings(req, res, next) {
+    console.log(req.session.userid)
+    pool.query("SELECT * FROM hires WHERE user_id = $1", [req.session.userid],
+        function(err, results) {
+            if (err){
+                console.error("select users", err)
+                return;
+            }
+            console.log(results)
+            res.locals.bookings = results.rows
+            console.log("select bookings successful")
+            next()
+        }
+    )
+}
+
+function getServiceBookings(req, res, next) {
     console.log(req.session.userid)
     pool.query("SELECT * FROM hires WHERE actor_id = $1", [req.session.userid],
         function(err, results) {
@@ -70,7 +76,29 @@ function getBookings(req, res, next) {
     )
 }
 
-app.get('/account', getBookings, function(req, res) {
+app.get('/account',function(req, res) {
+    if (!req.session.loggedin) {
+        res.redirect('/login')
+    }
+    if(req.session.actor) {
+        res.redirect('/account/service')
+    } else {
+        res.redirect('/account/user')
+    }
+})
+
+app.get('/account/service', getServiceBookings, function(req, res) {
+    if (!req.session.loggedin) {
+        res.redirect('/login')
+    }
+    var obj = {
+        name : req.session.name,
+        arr : res.locals.bookings
+    }
+    res.render('serviceaccount', obj)
+})
+
+app.get('/account/user', getUserBookings, function(req, res) {
     if (!req.session.loggedin) {
         res.redirect('/login')
     }
@@ -100,7 +128,13 @@ app.get('/hire', function(req, res) {
     if (!req.session.loggedin) {
         res.redirect('/login')
     }
-    pool.query("SELECT * FROM users WHERE actor = TRUE", function(err, results) {
+    pool.query(`SELECT u.user_id,u.name, u.actor, u.descrip, COALESCE(
+        AVG(h.rating) FILTER (WHERE h.rating > 0), 0
+    )
+    AS average_rating FROM users u LEFT JOIN hires h
+    ON u.user_id = h.actor_id
+    WHERE u.actor = TRUE
+    GROUP by u.user_id,u.name,u.actor,u.descrip`, function(err, results) {
         if (err) {
             console.error("getting actors ", err)
             return;
@@ -141,10 +175,12 @@ function getRelevantRows(req, res, next) {
 app.post('/hireform/hire-response', getRelevantRows, function(req, res) {
     var arr = [9,10,11,12,13,14,15,16,17]
     const samedate = res.locals.samedate
+    console.log(samedate)
     for (let i = 0; i < samedate.length; i++) {
         for (let j = 0; j < samedate[i].time.length; j++) {
             if (arr.includes(samedate[i].time[j])) {
                 delete arr[samedate[i].time[j] - 9]
+                console.log('samedate removed')
             }
         }
     }
@@ -166,8 +202,8 @@ app.post('/hireform/hire-response/hire-response-two', function(req, res) {
         }
     }
     console.log(arr)
-    pool.query(`INSERT INTO hires (user_id, actor_id, rating, date, time, request) VALUES
-        ($1, $2, 0, $3, $4, $5)`, [req.session.userid, req.body.actorid, req.body.date, arr, req.body.request], 
+    pool.query(`INSERT INTO hires (user_id, actor_id, rating, date, time, request, accepted, hasRated) VALUES
+        ($1, $2, 0, $3, $4, $5, false, false)`, [req.session.userid, req.body.actorid, req.body.date, arr, req.body.request], 
         function(err, results) {
             if (err) {
                 console.error("insert booking", err)
@@ -175,8 +211,8 @@ app.post('/hireform/hire-response/hire-response-two', function(req, res) {
             }
             res.locals.samedate = results.rows
             console.log("booked yay")
+            res.redirect('/account')
         })
-    res.redirect('/account')
 })
 
 app.get('/login', function(req, res) {
@@ -196,6 +232,7 @@ function getExpectedPW(req, res, next) {
                     res.locals.name = result.rows[0].name
                     res.locals.userid = result.rows[0].user_id
                     res.locals.expectedpw = result.rows[0].password
+                    res.locals.actor = result.rows[0].actor
                 } else {
                     res.redirect('/login')
                 }
@@ -218,6 +255,7 @@ app.post('/login-response', getExpectedPW, function(req, res) {
             req.session.loggedin = true
             req.session.name = res.locals.name
             req.session.userid = res.locals.userid
+            req.session.actor = res.locals.actor
             res.redirect('/account')
         } else {
             res.redirect('/login')
@@ -273,21 +311,64 @@ app.get('/freelance-signup', function(req, res) {
 
 app.post('/signup-response', generateSalt, hashPassword, function(req, res) {
     const isactor = req.body.actor === 'true'
-    const descrip = ""
+    let descrip = ""
     if(req.body.descrip) {
         descrip = req.body.descrip
     }
-    pool.query(`INSERT INTO users (username, password, name, actor, descrip) VALUES ($1, $2, $3)`,
+    pool.query(`INSERT INTO users (username, password, name, actor, descrip) VALUES ($1, $2, $3, $4, $5)`,
         [req.body.username, res.locals.newpw, req.body.name, isactor, descrip], function(err, result) {
             if(err) {
                 console.log('insert user error')
                 console.log(err)
+                return;
             } else {
                 console.log("insert user successful")
             }
+            res.redirect('/account')
         }
     )
-    res.redirect('/account')
+})
+
+app.post('/rate/:id', function(req, res) {
+    pool.query(`UPDATE hires SET rating = $1, hasRated = true WHERE id = $2`,[parseInt(req.body.rating), req.params.id], 
+        function(err, result) {
+            if(err) {
+                console.log('update rating err')
+                console.log(err)
+                return;
+            }
+            console.log("update rating successful")
+            res.redirect('/account')
+        }
+    )
+})
+
+app.post('/accept/:id', function(req,res) {
+    pool.query(`UPDATE hires SET accepted = true WHERE id = $1`,[req.params.id], 
+        function(err, result) {
+            if(err) {
+                console.log('accept booking error')
+                console.log(err)
+                return;
+            }
+            console.log("accept booking successful")
+            res.redirect('/account')
+        }
+    )
+})
+
+app.post('/decline/:id', function(req, res) {
+    pool.query(`UPDATE hires SET actor_id = 0, accepted = false WHERE id = $1`,[req.params.id], 
+        function(err, result) {
+            if(err) {
+                console.log('decline booking error')
+                console.log(err)
+                return;
+            }
+            console.log("decline booking successful")
+            res.redirect('/account')
+        }
+    )
 })
 
 app.get('/signout', function(req,res) {

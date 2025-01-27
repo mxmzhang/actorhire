@@ -1,22 +1,125 @@
 <!DOCTYPE html>
 <html>
-    {{>head}}
-    <body>
-        {{>navbar}}
-        <div class="container mt-5 ms-4">
-            <h3>{{name}}</h3>
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5>Bookings</h5>
-                <a href="/signout" class="btn btn-outline-danger">Sign Out</a>
-            </div>
-        
-            {{#each arr}}
-                <div class="mb-3">
-                    <strong>Request:</strong> {{this.request}}<br>
-                    <strong>Date:</strong> {{this.date}}<br>
-                    <strong>Time:</strong> {{this.time}}<br>
-                </div>
-            {{/each}}
+  {{> head}}
+  <body>
+    {{> navbar}}
+
+    <div class="container mt-5 ms-4">
+      <h3>{{name}}</h3>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5>Bookings</h5>
+        <a href="/signout" class="btn btn-outline-danger">Sign Out</a>
+      </div>
+
+      {{#each arr}}
+        <div class="card mb-3">
+          <div class="card-header {{#if this.accepted}}bg-success text-white{{else}}bg-danger text-white{{/if}}">
+            {{#if this.accepted}}
+              Accepted
+            {{else}}
+              Not Accepted
+            {{/if}}
+          </div>
+          <div class="card-body">
+            <p class="card-text"><strong>Request:</strong> {{this.request}}</p>
+            <p class="card-text"><strong>Date:</strong> {{this.date}}</p>
+            <p class="card-text"><strong>Time:</strong> {{this.time}}</p>
+            {{#if this.accepted}}
+              {{#if this.hasrated}}
+                <p class="text-muted">
+                  You have already rated this experience.
+                </p>
+              {{else}}
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#rateModal{{this.id}}"
+                >
+                  Rate Experience
+                </button>
+              {{/if}}
+            {{/if}}
+          </div>
         </div>
-    </body>
+
+        {{#if this.accepted}}
+          {{#unless this.hasrated}}
+            <div
+              class="modal fade"
+              id="rateModal{{this.id}}"
+              tabindex="-1"
+              aria-labelledby="rateModalLabel{{this.id}}"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <form action="/rate/{{this.id}}" method="POST">
+                    <div class="modal-header">
+                      <h5
+                        class="modal-title"
+                        id="rateModalLabel{{this.id}}"
+                      >
+                        Rate Your Experience
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label
+                          for="rating{{this.id}}"
+                          class="form-label"
+                        >
+                          Rating (1-5)
+                        </label>
+                        <select
+                          class="form-select"
+                          id="rating{{this.id}}"
+                          name="rating"
+                          required
+                        >
+                          <option value="" disabled selected>
+                            Select your rating
+                          </option>
+                          <option value="1">1 - Very Dissatisfied</option>
+                          <option value="2">2 - Dissatisfied</option>
+                          <option value="3">3 - Neutral</option>
+                          <option value="4">4 - Satisfied</option>
+                          <option value="5">5 - Very Satisfied</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="submit"
+                        class="btn btn-primary"
+                      >
+                        Submit Rating
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {{/unless}}
+        {{/if}}
+      {{/each}}
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    ></script>
+  </body>
 </html>
